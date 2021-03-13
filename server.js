@@ -5,8 +5,7 @@ const http = require('http').createServer(app);
 const io = require('socket.io')(http, {
   cors: {
     origin: process.env.ORIGIN_URL,
-  },
-  path:'/socket.io'
+  }
 });
 
 io.on('connection', (socket) => {
