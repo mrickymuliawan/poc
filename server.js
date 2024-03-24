@@ -1,31 +1,36 @@
 require('dotenv').config()
 const cors = require("cors")
-const app = require('express')();
-const http = require('http').createServer(app);
-const io = require('socket.io')(http, {
-  cors: {
-    origin: process.env.ORIGIN_URL,
-  }
-});
+const express = require('express');
+const { createServer } = require("http");
+const { Server } = require("socket.io");
+
+let app = express();
 app.use(cors())
 
+const httpServer = createServer(app);
+const io = new Server(httpServer, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+  },
+});
 io.on('connection', (socket) => {
-  if (process.env.APP_ENV == 'dev') {
-    console.log('user connected');
-  }
-  socket.on('send-message', (payload) => {
-    io.emit('receive-message', payload)
+  console.log('user connected: ', socket.id);
+
+  socket.on('stream-pic', (payload) => {
+    console.log('stream-pic:', payload);
+    io.emit('stream-pic', payload)
   })
-  socket.on('read-message', (payload) => {
-    io.emit('read-message', payload)
+  socket.on('send-pic', (payload) => {
+    console.log('send-pic:', payload);
+    io.emit('send-pic', payload)
   })
+
   socket.on('disconnect', () => {
-    if (process.env.APP_ENV == 'dev') {
-      console.log('user disconnected');
-    }
+    console.log('user disconnected: ', socket.id);
   })
 });
 
-http.listen(process.env.PORT, () => {
+httpServer.listen(process.env.PORT, () => {
   console.log('socket running on port ' + process.env.PORT);
 });
