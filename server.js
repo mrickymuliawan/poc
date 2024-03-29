@@ -26,6 +26,11 @@ io.on('connection', (socket) => {
     io.emit('send-pic', payload)
   })
 
+  socket.on('recognized-pic', (payload) => {
+    console.log('recognized-pic:', payload);
+    io.emit('recognized-pic', payload)
+  })
+
   socket.on('disconnect', () => {
     console.log('user disconnected: ', socket.id);
   })
