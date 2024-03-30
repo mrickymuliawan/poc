@@ -1,41 +1,39 @@
 require('dotenv').config()
-const cors = require("cors")
-const express = require('express');
-const { createServer } = require("http");
-const { Server } = require("socket.io");
+var io = require('socket.io-client');
+var socket = io.connect(process.env.SOCKET_SERVER_HOST, { reconnect: true });
 
-let app = express();
-app.use(cors())
-
-const httpServer = createServer(app);
-const io = new Server(httpServer, {
-  cors: {
-    origin: "*",
-    methods: ["GET", "POST"],
+const ffmpegProcess = spawn(
+  'ffmpeg',
+  [
+    '-i',
+    process.env.CAMERA_HOST,
+    '-vf',
+    'scale=640:480',
+    '-f',
+    'image2pipe',
+    '-vcodec',
+    'mjpeg',
+    '-',
+  ],
+  {
+    stdio: ['ignore', 'pipe', 'ignore'],
   },
-});
-io.on('connection', (socket) => {
-  console.log('user connected: ', socket.id);
+);
 
-  socket.on('stream-pic', (payload) => {
-    console.log('stream-pic:', payload);
-    io.emit('stream-pic', payload)
-  })
-  socket.on('send-pic', (payload) => {
-    console.log('send-pic:', payload);
-    io.emit('send-pic', payload)
-  })
 
-  socket.on('recognized-pic', (payload) => {
-    console.log('recognized-pic:', payload);
-    io.emit('recognized-pic', payload)
-  })
-
-  socket.on('disconnect', () => {
-    console.log('user disconnected: ', socket.id);
-  })
+ffmpegProcess.stdout.on('data', (data) => {
+  // Convert frame to base64
+  const base64Frame = Buffer.from(data).toString('base64');
+  // Send frame to client
+  socket.emit('frame', base64Frame);
 });
 
-httpServer.listen(process.env.PORT, () => {
-  console.log('socket running on port ' + process.env.PORT);
+socket.on('connect', function (socket) {
+  console.log('Connected!');
 });
+
+
+socket.on('disconnect', () => {
+  console.log('user disconnected: ', socket.id);
+  ffmpegProcess.kill('SIGINT'); // Kill ffmpeg process when client disconnects
+})
