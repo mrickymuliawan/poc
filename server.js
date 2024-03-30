@@ -25,6 +25,7 @@ ffmpegProcess.stdout.on('data', (data) => {
   // Convert frame to base64
   const base64Frame = Buffer.from(data).toString('base64');
   // Send frame to client
+  console.log('got image', base64Frame);
   socket.emit('frame', base64Frame);
 });
 
