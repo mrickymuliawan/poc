@@ -6,7 +6,7 @@ const ffmpegProcess = spawn(
   'ffmpeg',
   [
     '-i',
-    process.env.CAMERA_HOST,
+    process.env.me,
     '-vf',
     'scale=640:480',
     '-f',
@@ -26,7 +26,7 @@ ffmpegProcess.stdout.on('data', (data) => {
   const base64Frame = Buffer.from(data).toString('base64');
   // Send frame to client
   console.log('got image', base64Frame);
-  socket.emit('frame', base64Frame);
+  socket.emit('send-stream', base64Frame);
 });
 
 socket.on('connect', function (socket) {
