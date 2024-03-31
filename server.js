@@ -31,6 +31,11 @@ io.on('connection', (socket) => {
     io.emit('recognized-pic', payload)
   })
 
+  socket.on('recognized-list', (payload) => {
+    console.log('recognized-list:', payload);
+    io.emit('recognized-list', payload)
+  })
+
   socket.on('disconnect', () => {
     console.log('user disconnected: ', socket.id);
   })
