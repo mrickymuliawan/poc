@@ -3,6 +3,7 @@ const cors = require("cors")
 const express = require('express');
 const { createServer } = require("http");
 const { Server } = require("socket.io");
+const dayjs = require('dayjs')
 
 let app = express();
 app.use(cors())
@@ -18,21 +19,21 @@ io.on('connection', (socket) => {
   console.log('user connected: ', socket.id);
 
   socket.on('stream-pic', (payload) => {
-    console.log('stream-pic:');
+    console.log('stream-pic:', dayjs().format('DD/MM/YYYY HH:mm:ss'));
     io.emit('stream-pic', payload)
   })
   socket.on('send-pic', (payload) => {
-    console.log('send-pic:');
+    console.log('send-pic:', dayjs().format('DD/MM/YYYY HH:mm:ss'));
     io.emit('send-pic', payload)
   })
 
   socket.on('recognized-pic', (payload) => {
-    console.log('recognized-pic:', payload);
+    console.log('recognized-pic:', dayjs().format('DD/MM/YYYY HH:mm:ss'), payload,);
     io.emit('recognized-pic', payload)
   })
 
   socket.on('recognized-list', (payload) => {
-    console.log('recognized-list:', payload);
+    console.log('recognized-list:', dayjs().format('DD/MM/YYYY HH:mm:ss'), payload);
     io.emit('recognized-list', payload)
   })
 
