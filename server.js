@@ -18,11 +18,11 @@ io.on('connection', (socket) => {
   console.log('user connected: ', socket.id);
 
   socket.on('stream-pic', (payload) => {
-    console.log('stream-pic:', payload);
+    console.log('stream-pic:');
     io.emit('stream-pic', payload)
   })
   socket.on('send-pic', (payload) => {
-    console.log('send-pic:', payload);
+    console.log('send-pic:');
     io.emit('send-pic', payload)
   })
 
