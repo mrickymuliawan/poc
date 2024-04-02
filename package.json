@@ -15,7 +15,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js",
+    "start": "sudo node server.js",
     "dev": "nodemon server.js",
     "pm2:start": "pm2 start npm --name \"adala-socket\" -- run start",
     "pm2:restart": "pm2 restart adala-socket",
