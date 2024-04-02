@@ -1,66 +1,35 @@
 require('dotenv').config();
 var io = require('socket.io-client');
 var socket = io.connect(process.env.SOCKET_SERVER_HOST, { reconnect: true });
-const { spawn } = require('child_process');
-// const ffmpeg = require('fluent-ffmpeg');
-
-// console.log(process.env.SOCKET_SERVER_HOST);
-
-const ffmpegProcess = spawn(
-  'ffmpeg',
-  [
-    '-i',
-    process.env.CAMERA_HOST,
-    '-vf',
-    'scale=640:480',
-    '-r',
-    '1',
-    '-f',
-    'image2pipe',
-    '-vcodec',
-    'mjpeg',
-    '-',
-  ],
-  {
-    stdio: ['ignore', 'pipe', 'ignore'],
-  },
-);
-
-ffmpegProcess.stdout.on('data', (data) => {
-  // Convert frame to base64
-  console.log(data);
-  // const base64Frame = Buffer.from(data).toString('base64');
-  // Send frame to client
-  // console.log('data:image/png;base64,' + base64Frame);
-  // require("fs").writeFile("out.png", 'data:image/png;base64,' + base64Frame, 'base64', function (err) {
-  //   console.log(err);
-  // });
-
-  // socket.emit(
-  //   'stream-pic',
-  //   JSON.stringify({ image: base64Frame, outletId: 2 }),
-  // );
+const rtsp = require('rtsp-ffmpeg');
+const fs = require('fs');
+var stream = new rtsp.FFMpeg({
+  input: process.env.CAMERA_HOST,
+  rate: 1, // output framerate (optional)
+  resolution: '640x480', // output resolution in WxH format (optional)
+  // quality: 3,
 });
 
-// // Set up the RTSP stream
-// ffmpeg(`${process.env.CAMERA_HOST}`)
-//   .inputFormat('rtsp')
-//   .videoCodec('mjpeg')
-//   .size('640x480')
-//   .fps(1)
-//   .on('data', (data) => {
-//     // Encode the video data to base 64
-//     console.log(data);
-//     const base64Data = data.toString('base64');
+var pipeStream = function (data) {
+  const base64String = 'data:image/png;base64,' + data.toString('base64')
+  let base64Image = base64String.split(';base64,').pop();
 
-//     // Send the base 64 data to the client
-//     socket.emit('stream-pic', base64Data);
-//   });
+  fs.writeFile('image.png', base64Image, { encoding: 'base64' }, function (err) {
+    console.log('File created');
+  });
+  const json = {
+    image: base64String,
+    outletId: 35,
+  }
+  socket.emit('stream-pic', JSON.stringify(json));
+};
+stream.on('data', pipeStream);
 
 socket.on('connect', function (socket) {
   console.log('Connected!');
 });
 
 socket.on('disconnect', () => {
+  stream.removeListener('data', pipeStream);
   console.log('user disconnected: ', socket.id);
 });
