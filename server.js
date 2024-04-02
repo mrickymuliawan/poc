@@ -34,12 +34,12 @@ io.on('connection', (socket) => {
   })
 
   socket.on('recognized-pic', (payload) => {
-    console.log('recognized-pic:', dayjs().format('DD/MM/YYYY HH:mm:ss'), payload,);
+    console.log('recognized-pic:', dayjs().format('DD/MM/YYYY HH:mm:ss'), payload?.customer,);
     io.emit('recognized-pic', payload)
   })
 
   socket.on('recognized-list', (payload) => {
-    console.log('recognized-list:', dayjs().format('DD/MM/YYYY HH:mm:ss'), payload);
+    console.log('recognized-list:', dayjs().format('DD/MM/YYYY HH:mm:ss'));
     io.emit('recognized-list', payload)
   })
 
