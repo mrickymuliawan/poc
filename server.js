@@ -8,7 +8,11 @@ const dayjs = require('dayjs')
 let app = express();
 app.use(cors())
 
-const httpServer = createServer(app);
+const httpServer = createServer({
+  key: fs.readFileSync('./server.key'),
+  cert: fs.readFileSync('./server.cert')
+}, app);
+
 const io = new Server(httpServer, {
   cors: {
     origin: "*",
