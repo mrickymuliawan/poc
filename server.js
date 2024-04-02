@@ -9,7 +9,7 @@ const fs = require('fs');
 let app = express();
 app.use(cors())
 
-const httpServer = http.createServer(app);
+const httpServer = createServer(app);
 const httpsServer = createServer({
   key: fs.readFileSync('./server.key'),
   cert: fs.readFileSync('./server.cert')
