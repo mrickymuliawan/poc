@@ -9,7 +9,8 @@ const fs = require('fs');
 let app = express();
 app.use(cors())
 
-const httpServer = createServer({
+const httpServer = http.createServer(app);
+const httpsServer = createServer({
   key: fs.readFileSync('./server.key'),
   cert: fs.readFileSync('./server.cert')
 }, app);
@@ -49,4 +50,8 @@ io.on('connection', (socket) => {
 
 httpServer.listen(process.env.PORT, () => {
   console.log('socket running on port ' + process.env.PORT);
+});
+
+httpsServer.listen(443, () => {
+  console.log('server started at 443');
 });
