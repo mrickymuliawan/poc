@@ -17,9 +17,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "sudo node server.js",
     "dev": "nodemon server.js",
-    "pm2:start": "pm2 start npm --name \"adala-socket\" -- run start",
-    "pm2:restart": "pm2 restart adala-socket",
-    "pm2:reload": "pm2 reload adala-socket"
+    "pm2:start": "pm2 start npm --name \"erha-socket\" -- run start",
+    "pm2:restart": "pm2 restart erha-socket",
+    "pm2:reload": "pm2 reload erha-socket"
   },
   "author": "",
   "license": "ISC"
