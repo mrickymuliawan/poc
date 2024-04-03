@@ -16,6 +16,7 @@ const httpsServer = createServer({
 }, app);
 
 const io = new Server(httpServer, {
+  maxHttpBufferSize: 1e8,
   cors: {
     origin: "*",
     methods: ["GET", "POST"],
