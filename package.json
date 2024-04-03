@@ -8,6 +8,7 @@
     "dotenv": "^8.2.0",
     "express": "^4.19.1",
     "ffmpeg": "^0.0.4",
+    "jimp": "^0.22.12",
     "rtsp-ffmpeg": "^0.0.17",
     "socket.io": "^4.7.5",
     "socket.io-client": "^4.7.5"
