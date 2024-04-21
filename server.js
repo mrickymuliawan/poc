@@ -9,14 +9,14 @@ const fs = require('fs');
 let app = express();
 app.use(cors())
 
-const httpServer = createServer(app);
-const httpsServer = createServer({
-  key: fs.readFileSync('./server.key'),
-  cert: fs.readFileSync('./server.cert')
-}, app);
+// const httpServer = createServer(app);
+// const httpsServer = createServer({
+//   key: fs.readFileSync('./server.key'),
+//   cert: fs.readFileSync('./server.cert')
+// }, app);
 
 const io = new Server(httpServer, {
-  maxHttpBufferSize: 1e8,
+  // maxHttpBufferSize: 1e8,
   cors: {
     origin: "*",
     methods: ["GET", "POST"],
@@ -63,6 +63,6 @@ httpServer.listen(process.env.PORT, () => {
   console.log('socket running on port ' + process.env.PORT);
 });
 
-httpsServer.listen(443, () => {
-  console.log('server started at 443');
-});
+// httpsServer.listen(443, () => {
+//   console.log('server started at 443');
+// });
