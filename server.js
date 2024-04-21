@@ -49,6 +49,11 @@ io.on('connection', (socket) => {
     io.emit('remove-recognized', payload)
   })
 
+  socket.on('user-registered', (payload) => {
+    console.log('user-registered:', dayjs().format('DD/MM/YYYY HH:mm:ss'));
+    io.emit('user-registered', payload)
+  })
+
   socket.on('disconnect', () => {
     console.log('user disconnected: ', socket.id);
   })
